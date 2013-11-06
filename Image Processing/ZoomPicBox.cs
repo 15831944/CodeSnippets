@@ -56,11 +56,10 @@ namespace QuickStichNamespace
         {
             return isPanning;
         }
+
         Bitmap _image;
-        [
-        Category("Appearance"),
-        Description("The image to be displayed")
-        ]
+
+        [Category("Appearance"), Description("The image to be displayed")]
         public Bitmap Image
         {
             get { return _image; }
@@ -73,10 +72,8 @@ namespace QuickStichNamespace
         }
 
         float _zoom = 1.0f;
-        [
-        Category("Appearance"),
-        Description("The zoom factor. Less than 1 to reduce. More than 1 to magnify.")
-        ]
+        
+        [Category("Appearance"), Description("The zoom factor. Less than 1 to reduce. More than 1 to magnify.")]
         public float Zoom
         {
             get { return _zoom; }
@@ -108,10 +105,8 @@ namespace QuickStichNamespace
         }
 
         InterpolationMode _interpolationMode = InterpolationMode.Default;
-        [
-        Category("Appearance"),
-        Description("The interpolation mode used to smooth the drawing")
-        ]
+
+        [Category("Appearance"), Description("The interpolation mode used to smooth the drawing")]
         public InterpolationMode InterpolationMode
         {
             get { return _interpolationMode; }
@@ -119,7 +114,7 @@ namespace QuickStichNamespace
         }
 
 
-        protected override void OnPaintBackground(PaintEventArgs pevent)
+        protected override void OnPaintBackground(PaintEventArgs prevent)
         {
             // do nothing.
         }
@@ -142,13 +137,17 @@ namespace QuickStichNamespace
             //and the desired interpolation mode
             e.Graphics.InterpolationMode = _interpolationMode;
             //Draw the image ignoring the images resolution settings.
-            e.Graphics.DrawImage(_image, new Rectangle(0, 0, this._image.Width, this._image.Height), 0, 0, _image.Width, _image.Height, GraphicsUnit.Pixel);
+            e.Graphics.DrawImage(_image, 
+                new Rectangle(0, 0, this._image.Width, this._image.Height), 
+                0, 0, _image.Width, _image.Height, GraphicsUnit.Pixel);
+
             base.OnPaint(e);
         }
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            this.Focus();
+            if (this.Parent.ContainsFocus)
+                this.Focus();
             base.OnMouseEnter(e);
         }
 
@@ -174,20 +173,21 @@ namespace QuickStichNamespace
         protected override void OnResize(EventArgs e)
         {
             DisplayedArea = CreateGraphics();
-            //UpdateDisplayedImage();
             base.OnResize(e);
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             ZoomImage(e);
-            //The next line is not called, because in addition to zooming scrolls the picture down or up
-            //base.OnMouseWheel(e);
+            // The next line is not called, because in addition to
+            // zooming scrolls the picture down or up
+            // base.OnMouseWheel(e);
         }
 
         public ZoomPicBox()
         {
             //Double buffer the control
+            // Prevents flickering
             this.SetStyle(ControlStyles.AllPaintingInWmPaint |
               ControlStyles.UserPaint |
               ControlStyles.ResizeRedraw |
@@ -224,7 +224,7 @@ namespace QuickStichNamespace
 
         void Pan(MouseEventArgs e)
         {
-            if (isPanning)
+            if ((isPanning) && (e.Button != MouseButtons.Left) && (e.Button != MouseButtons.Right))
             {
                 //With previousX and previousY the direction of mouse is determined and image is panned in correct direction
                 //imageX and imageY are used as coordinates for whole image, which helps the whole Image to be panned
