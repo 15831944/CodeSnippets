@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Linq;
 
+// Project must reference WindowsBase, in order to find System.IO.Packaging namespace
 class ZipArchive : IDisposable
 {
     private object external;
